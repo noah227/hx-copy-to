@@ -1,0 +1,53 @@
+{
+	"id": "noahyong-hx-copy-to",
+	"name": "hx-copy-to",
+	"description": "your extension description",
+	"displayName": "your extension display name",
+	"version": "0.0.0",
+	"publisher": "your name",
+	"engines": {
+		"HBuilderX": "^2.9.12"
+	},
+	"categories": [
+		"Other"
+	],
+	"main": "./extension",
+	"activationEvents": [
+		"onCommand:extension.copyTo"
+	],
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.copyTo",
+				"title": "复制到"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "extension.copyTo",
+					"group": "z_commands"
+				},
+				{
+					"group": "z_commands"
+				}
+			]
+		},
+		"configuration": {
+			"title": "文件复制",
+			"properties": {
+				"noahyong-hx-copy-to.remindIfExist": {
+					"type": "boolean",
+					"default": true,
+					"description": "文件存在时是否提示"
+				}
+			}
+		}
+	},
+	"extensionDependencies": [
+		"plugin-manager"
+	],
+	"dependencies": {
+		"node-file-dialog": "^1.0.3"
+	}
+}
