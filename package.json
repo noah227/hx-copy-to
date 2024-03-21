@@ -12,6 +12,9 @@
 		"Other"
 	],
 	"main": "./extension",
+	"scripts": {
+		"cfg:build": "hx-cfg-helper"
+	},
 	"activationEvents": [
 		"onCommand:extension.copyTo"
 	],
@@ -49,5 +52,8 @@
 	],
 	"dependencies": {
 		"node-file-dialog": "^1.0.3"
+	},
+	"devDependencies": {
+		"hx-configuration-helper": "^1.2.2"
 	}
 }

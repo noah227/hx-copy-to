@@ -4,6 +4,12 @@ const path = require("path")
 const fs = require("fs")
 
 module.exports = (context) => {
+	// const {Helper} = require("hx-configuration-helper")
+	// const h = new Helper(__dirname)
+	// const keyMap = require("./config.helper.js") 
+	// h.getItem(keyMap.remindIfExist)	
+	// return
+	
 	const fsPath = context.fsPath
 	dialog({
 		type: "directory"
