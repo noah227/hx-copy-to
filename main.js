@@ -9,8 +9,8 @@ module.exports = (context) => {
 	// const keyMap = require("./config.helper.js") 
 	// h.getItem(keyMap.remindIfExist)	
 	// return
-	
-	const fsPath = context.fsPath
+
+	const fsPath = path.resolve(context.fsPath)
 	dialog({
 		type: "directory"
 	}).then(dirList => {

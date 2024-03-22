@@ -1,10 +1,10 @@
 {
 	"id": "noahyong-hx-copy-to",
 	"name": "hx-copy-to",
-	"description": "your extension description",
-	"displayName": "your extension display name",
-	"version": "0.0.0",
-	"publisher": "your name",
+	"description": "右键复制文件（夹）到选择的位置",
+	"displayName": "文件复制",
+	"version": "0.1.0",
+	"publisher": "Noah Young",
 	"engines": {
 		"HBuilderX": "^2.9.12"
 	},
@@ -22,14 +22,15 @@
 		"commands": [
 			{
 				"command": "extension.copyTo",
-				"title": "复制到"
+				"title": "复制到 ->"
 			}
 		],
 		"menus": {
 			"explorer/context": [
 				{
 					"command": "extension.copyTo",
-					"group": "z_commands"
+					"group": "z_commands",
+					"when": "workspaceRelativePath"
 				},
 				{
 					"group": "z_commands"
