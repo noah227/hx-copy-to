@@ -22,7 +22,7 @@
 		"commands": [
 			{
 				"command": "extension.copyTo",
-				"title": "复制到 ->"
+				"title": "文件复制到"
 			}
 		],
 		"menus": {
@@ -38,12 +38,22 @@
 			]
 		},
 		"configuration": {
-			"title": "文件复制",
+			"title": "🦄文件复制",
 			"properties": {
-				"noahyong-hx-copy-to.remindIfExist": {
+				"noahyong-hx-copy-to.a_remindIfExist": {
 					"type": "boolean",
 					"default": true,
 					"description": "文件存在时是否提示"
+				},
+				"noahyong-hx-copy-to.b_inheritGitIgnore": {
+					"type": "boolean",
+					"default": false,
+					"description": "复制时是否继承`.gitignore`的设定"
+				},
+				"noahyong-hx-copy-to.c_inheritNpmIgnore": {
+					"type": "boolean",
+					"default": false,
+					"description": "复制时是否继承`.npmignore`的设定"
 				}
 			}
 		}
@@ -55,6 +65,7 @@
 		"node-file-dialog": "^1.0.3"
 	},
 	"devDependencies": {
-		"hx-configuration-helper": "^1.2.2"
+		"@types/node": "^20.11.30",
+		"hx-configuration-helper": "^1.4.3"
 	}
 }

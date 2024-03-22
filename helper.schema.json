@@ -1,0 +1,13 @@
+{
+    "properties": {
+        "remindIfExist": {
+            "description": "文件存在时是否提示"
+        },
+        "inheritGitIgnore": {
+            "description": "复制时是否继承`.gitignore`的设定"
+        },
+        "inheritNpmIgnore": {
+            "description": "复制时是否继承`.npmignore`的设定"
+        }
+    }
+}

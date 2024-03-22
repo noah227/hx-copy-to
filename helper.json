@@ -1,0 +1,6 @@
+{
+    "$schema": "helper.schema.json",
+    "remindIfExist": "a_remindIfExist",
+    "inheritGitIgnore": "b_inheritGitIgnore",
+    "inheritNpmIgnore": "c_inheritNpmIgnore"
+}
