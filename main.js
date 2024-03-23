@@ -2,16 +2,27 @@ var hx = require("hbuilderx");
 const dialog = require("node-file-dialog")
 const path = require("path")
 const fs = require("fs")
+const {
+	isMatch
+} = require("matcher-cjs")
+
+const readGitIgnore = (context) => {
+	const wsFolder = context.workspaceFolder.uri.fsPath
+	const gitIgnorePath = path.resolve(wsFolder, ".gitignore")
+	if (!fs.existsSync(gitIgnorePath)) return console.warn(`${gitIgnorePath}不存在，已取消过滤`)
+	const s = fs.readFileSync(gitIgnorePath, {
+		encoding: "utf8"
+	})
+	return s.split("\r").reduce((dataList, line) => {
+		line = line.trim()
+		if (line && !line.startsWith("#")) dataList.push(line)
+		return dataList
+	}, [])
+}
 
 module.exports = (context) => {
-	// const {Helper} = require("hx-configuration-helper")
-	// const h = new Helper(__dirname)
-	// const keyMap = require("./helper.json")
-	// h.getItem(keyMap.remindIfExist)
-
-	// return
-
 	const fsPath = path.resolve(context.fsPath)
+
 	dialog({
 		type: "directory"
 	}).then(dirList => {
@@ -19,14 +30,53 @@ module.exports = (context) => {
 			const dir = dirList[0]
 			const dest = path.join(dir, path.basename(fsPath))
 			console.log(fsPath, "________", dir, "___", dest)
+
+			const {
+				Helper
+			} = require("hx-configuration-helper")
+			const h = new Helper(__dirname)
+			const keyMap = require("./helper.json")
+
 			const action = () => {
+				const inheritGitIgnore = h.getItem(keyMap.inheritGitIgnore)
+				let gitIgnoreList = null
+				// 读取gitignore
+				if (inheritGitIgnore) {
+					gitIgnoreList = readGitIgnore(context)
+					console.log("已读取.gitignore：", gitIgnoreList)
+				}
+				
+				/**
+				 * @param {string} src
+				 */
+				const ignoreFilter = (src, dest) => {
+					if (!inheritGitIgnore) return true
+					else if (!gitIgnoreList) return true
+					else if (!gitIgnoreList.length) return true
+					else {
+						const _ = src.replace(/(^\\\\\?\\)?/, "").replace(fsPath + "\\", "")
+							.replaceAll(/\\/g, "/")
+						const filterMatched = gitIgnoreList.find(s => _.startsWith(s) || isMatch(_,
+							s))
+						if (filterMatched) {
+							console.log(`根据.gitignore，已过滤：${_}`)
+						} else {
+							hx.window.setStatusBarMessage(`复制中：${src} -> ${dest}`)
+							return true
+						}
+					}
+				}
+
 				const _start = Date.now()
 				// todo cancel ?
 				fs.cp(fsPath, dest, {
 					recursive: true,
+					/**
+					 * @param {string} src
+					 * @param {string} dest
+					 */
 					filter(src, dest) {
-						hx.window.setStatusBarMessage(`复制中：${src} -> ${dest}`)
-						return true
+						return ignoreFilter(src, dest)
 					}
 				}, err => {
 					hx.window.clearStatusBarMessage()
@@ -61,8 +111,7 @@ module.exports = (context) => {
 					}
 				})
 			}
-			if (fs.existsSync(dest) && hx.workspace.getConfiguration(require("./package.json").id).get(
-					"remindIfExist")) {
+			if (fs.existsSync(dest) && h.getItem(keyMap.remindIfExist)) {
 				hx.window.showMessageBox({
 					title: "提示",
 					text: `

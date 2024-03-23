@@ -11,7 +11,7 @@
 	"categories": [
 		"Other"
 	],
-	"main": "./extension",
+	"main": "./extension", 
 	"scripts": {
 		"cfg:build": "hx-cfg-helper"
 	},
@@ -62,6 +62,7 @@
 		"plugin-manager"
 	],
 	"dependencies": {
+		"matcher-cjs": "^1.0.0",
 		"node-file-dialog": "^1.0.3"
 	},
 	"devDependencies": {
