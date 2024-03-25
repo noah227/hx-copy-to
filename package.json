@@ -11,7 +11,7 @@
 	"categories": [
 		"Other"
 	],
-	"main": "./extension", 
+	"main": "./extension",
 	"scripts": {
 		"cfg:build": "hx-cfg-helper"
 	},
@@ -67,6 +67,6 @@
 	},
 	"devDependencies": {
 		"@types/node": "^20.11.30",
-		"hx-configuration-helper": "^1.4.3"
+		"hx-configuration-helper": "^1.5.7"
 	}
 }

@@ -2,7 +2,7 @@
 node_modules
 dist
 *.zip
-helper.*
+config.helper.js
 
 # local env files
 .env.local
