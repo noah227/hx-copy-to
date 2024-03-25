@@ -35,7 +35,7 @@ module.exports = (context) => {
 				Helper
 			} = require("hx-configuration-helper")
 			const h = new Helper(__dirname)
-			const keyMap = require("./helper.json")
+			const keyMap = require("./config.helper.js")
 
 			const action = () => {
 				const inheritGitIgnore = h.getItem(keyMap.inheritGitIgnore)

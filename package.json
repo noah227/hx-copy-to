@@ -67,6 +67,6 @@
 	},
 	"devDependencies": {
 		"@types/node": "^20.11.30",
-		"hx-configuration-helper": "^1.5.7"
+		"hx-configuration-helper": "^1.5.9"
 	}
 }
