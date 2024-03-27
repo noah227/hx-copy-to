@@ -5,6 +5,7 @@ const publishName = `${require("./package.json").name}.zip`
     cozip(publishName, [
         ["./extension.js", false],
         ["./main.js", false],
+        ["./config.helper.js", false],
         ["./package.json", false],
         ["./node_modules/commander", true],
         ["./node_modules/hx-configuration-helper", true],
