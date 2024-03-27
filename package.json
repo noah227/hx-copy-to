@@ -13,7 +13,8 @@
 	],
 	"main": "./extension",
 	"scripts": {
-		"cfg:build": "hx-cfg-helper"
+		"cfg:build": "hx-cfg-helper",
+		"pack": "node hx-pack.js"
 	},
 	"activationEvents": [
 		"onCommand:extension.copyTo"
@@ -22,7 +23,7 @@
 		"commands": [
 			{
 				"command": "extension.copyTo",
-				"title": "文件复制到"
+				"title": "文件复制"
 			}
 		],
 		"menus": {
@@ -49,11 +50,6 @@
 					"type": "boolean",
 					"default": false,
 					"description": "复制时是否继承`.gitignore`的设定"
-				},
-				"noahyong-hx-copy-to.c_inheritNpmIgnore": {
-					"type": "boolean",
-					"default": false,
-					"description": "复制时是否继承`.npmignore`的设定"
 				}
 			}
 		}
@@ -67,6 +63,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^20.11.30",
+		"cozip": "^0.1.0",
 		"hx-configuration-helper": "^1.5.9"
 	}
 }

@@ -20,7 +20,10 @@ const readGitIgnore = (context) => {
 	}, [])
 }
 
-module.exports = (context) => {
+/**
+ * todo rename 复之前重命名文件
+ */
+module.exports = (context, rename=false) => {
 	const fsPath = path.resolve(context.fsPath)
 
 	dialog({
