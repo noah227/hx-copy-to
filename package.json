@@ -59,7 +59,7 @@
 	],
 	"dependencies": {
 		"matcher-cjs": "^1.0.0",
-		"node-file-dialog": "^1.0.3"
+		"node-file-dialog": "github:noah227/node-file-dialog"
 	},
 	"devDependencies": {
 		"@types/node": "^20.11.30",
