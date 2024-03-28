@@ -3,6 +3,7 @@ node_modules
 dist
 *.zip
 config.helper.js
+test.js 
 
 # local env files
 .env.local
