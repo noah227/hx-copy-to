@@ -3,7 +3,13 @@ const dialog = require("node-file-dialog")
 const path = require("path")
 const fs = require("fs")
 
-const {readGitIgnore, createCpFilter, createSuccessMessage, showErrorMessage, getWsFolder} = require("./main.utils.js");
+const {
+    readGitIgnore,
+    createCpFilter,
+    createSuccessMessage,
+    showErrorMessage,
+    getWsFolder
+} = require("./main.utils.js");
 
 /**
  * todo rename 复之前重命名文件
@@ -42,36 +48,37 @@ module.exports = (context, rename = false) => {
             }
             const ignoreFilter = createCpFilter(wsFolder, gitIgnoreList)
 
-			// 放弃所有复制
-			let abortAll = false
-            const action = (fsPath) => {
-                return new Promise((resolve, reject) => { 
-                    const dest = path.join(dir, path.basename(fsPath))
-
-                    console.log(fsPath, "________", dir, "___", dest)
-					
-                    const _action = () => {
-						if(abortAll) return resolve("用户已选择了全部取消")
-                        fs.cp(fsPath, dest, {
-                            recursive: true,
-                            /**
-                             * @param {string} src
-                             * @param {string} dest
-                             */
-                            filter(src, dest) {
-                                return ignoreFilter(fsPath, src, dest)
-                            }
-                        }, err => {
-                            err ? reject(err) : resolve(true)
-                        })
+            // 放弃所有复制
+            let abortAll = false, continueAll = false, copiedList = []
+            const __action = (fsPath, dest) => new Promise((resolve, reject) => {
+                if (abortAll) return resolve("用户已选择了全部取消")
+                fs.cp(fsPath, dest, {
+                    recursive: true,
+                    /**
+                     * @param {string} src
+                     * @param {string} dest
+                     */
+                    filter(src, dest) {
+                        return ignoreFilter(fsPath, src, dest)
                     }
-                    if (willRemindIfExist && fs.existsSync(dest)) {
-						let buttons = ["取消", "继续"]
-						let defaultButton = 0
-						if(fsPathList.length > 1) {
-							buttons = ["全部取消", ...buttons]
-							defaultButton = 1
-						}
+                }, err => {
+                    err ? reject(err) : resolve(true)
+                })
+            })
+            /**
+             * @param {string[]} pathList
+             */
+            const stackRun = (pathList) => new Promise((resolve, reject) => {
+                if (pathList.length) {
+                    const fsPath = pathList.splice(0, 1)[0]
+                    const dest = path.join(dir, path.basename(fsPath))
+                    if (!continueAll && willRemindIfExist && fs.existsSync(dest)) {
+                        let buttons = ["取消", "继续"]
+                        let defaultButton = 0
+                        if (pathList.length >= 1) {
+                            buttons = ["全部取消", "全部继续", ...buttons]
+                            defaultButton = 1
+                        }
                         hx.window.showMessageBox({
                             title: "提示",
                             text: `
@@ -80,33 +87,40 @@ module.exports = (context, rename = false) => {
 								</div>
 							`,
                             buttons,
-							defaultButton
+                            defaultButton
                         }).then(button => {
-							switch(button) {
-								case "全部取消":
-									abortAll = true
-									hx.window.setStatusBarMessage("用户已全部取消")
-									resolve("用户已全部取消")
-									break
-								case "取消":E
-									resolve("用户已取消")
-									break
-								case "继续":
-									_action()
-									break;
-							}
+                            switch (button) {
+                                case "全部继续":
+                                    continueAll = true
+                                    copiedList.push(fsPath)
+                                    resolve(__action(fsPath, dest).then(() => stackRun(pathList)))
+                                    break
+                                case "全部取消":
+                                    abortAll = true
+                                    hx.window.setStatusBarMessage("用户已全部取消")
+                                    resolve("用户已全部取消")
+                                    break
+                                case "取消":
+                                    resolve(stackRun(pathList))
+                                    break
+                                case "继续":
+                                    copiedList.push(fsPath)
+                                    resolve(__action(fsPath, dest).then(() => stackRun(pathList)))
+                                    break;
+                            }
                         })
-                    } else _action()
-                })
-            }
+                    } else {
+                        copiedList.push(fsPath)
+                        resolve(__action(fsPath, dest).then(() => stackRun(pathList)))
+                    }
+                } else resolve(true)
+            })
             try {
-                const _start = Date.now()
-                const cpList = fsPathList.map(fsPath => {
-                    return action(fsPath)
-                })
-				
-                Promise.all(cpList).then(() => {
-                    hx.window.showInformationMessage(createSuccessMessage(_start, fsPathList, dir), ["关闭", "打开路径"]).then(button => {
+                stackRun(fsPathList).then(() => {
+                    copiedList.length && hx.window.showInformationMessage(
+                        createSuccessMessage(copiedList, dir),
+                        process.platform === "win32" ? ["关闭", "打开路径"] : ["关闭"]
+                    ).then(button => {
                         if (button === "打开路径") {
                             const {
                                 exec
@@ -117,7 +131,8 @@ module.exports = (context, rename = false) => {
                 }).catch(err => {
                     showErrorMessage(err)
                 }).finally(() => {
-                    hx.window.clearStatusBarMessage()
+                    if (!copiedList.length) hx.window.setStatusBarMessage("没有复制任何内容")
+                    else hx.window.clearStatusBarMessage()
                 })
             } catch (err) {
                 showErrorMessage(err)

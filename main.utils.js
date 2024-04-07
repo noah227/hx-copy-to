@@ -83,16 +83,16 @@ module.exports = {
         })
     },
     /**
-     * @param {string[]} fsPathList
+     * @param {string[]} copiedList
      */
-    createSuccessMessage(_start, fsPathList, dir) {
-        let message = `<div>已复制 | 耗时<b>${Date.now() - _start}</b>ms</div>`
+    createSuccessMessage(copiedList, dir) {
+        let message = `<div>已复制</div>`
         // 单目标
-        if (fsPathList.length === 1) {
+        if (copiedList.length === 1) {
             message += `
 				<div style="display: flex;">
 					<span>从：</span>
-					<b>${fsPathList}</b>
+					<b>${copiedList}</b>
 				</div>
 				<div style="display: flex;">
 					<span>到：</span>
@@ -102,7 +102,7 @@ module.exports = {
         }
         // 多目标
         else {
-            message += `已复制${fsPathList.length}个文件到${dir}`
+            message += `已复制${copiedList.length}个文件到${dir}`
         }
         return message
     }
